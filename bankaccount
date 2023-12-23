@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BankAccount {
+    address public owner;
+    uint256 public balance;
+    uint256 public age;
+    uint256 public creditScore;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    modifier eligibleForCreditCard() {
+        require(creditScore > 700, "Not eligible for a credit card");
+        _;
+    }
+
+    constructor() {
+        owner = address(0);
+        creditScore = 0;
+    }
+
+    function openAccount(uint256 _initialDeposit, uint256 _age) public {
+        assert(_age >= 21);
+        require(_initialDeposit >= 5000, "depsoit must be greater or equal to 5000" );
+
+        owner = msg.sender;
+        balance = _initialDeposit;
+        age = _age;
+    }
+
+    function applyForCreditCard(uint256 _creditScore) public returns (bool) {
+        creditScore = _creditScore;
+
+        // Check eligibility for a credit card
+        if (creditScore > 700) {
+            return true;
+        } else {
+            revert("Not eligible for a credit card");
+        }
+    }
+}
